@@ -33,12 +33,13 @@ body {
 
 /* Homepage specific background (only for index.html) */
 body.homepage-background {
-    background-image: url('../images/kolektib-hero-bg.jpg');
+    /* Slightly less intense gradient for day mode since text will be white */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)), url('../images/kolektib-hero-bg.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* Makes background appear fixed while content scrolls */
+    background-attachment: fixed;
     background-repeat: no-repeat;
-    background-color: var(--color-background-dark); /* Fallback for transparency/load */
+    background-color: #333; /* A slightly darker fallback color */
 }
 
 /* Dark Mode styles */
@@ -46,6 +47,14 @@ body.dark-mode {
     color: var(--color-text-dark);
     background-color: var(--color-background-dark);
 }
+
+/* Homepage specific background in Dark Mode */
+body.homepage-background.dark-mode {
+    /* Stronger gradient for dark mode to ensure white text visibility */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('../images/kolektib-hero-bg.jpg');
+    background-color: #222; /* Darker fallback for dark mode */
+}
+
 
 /* Adjust transparency or background color for content blocks in dark mode */
 body.dark-mode header,
@@ -59,31 +68,65 @@ body.dark-mode .mobile-nav {
 }
 
 /* Homepage-specific adjustments for elements when full-page background is active */
+/* These make the main content sections (header, footer, introduction, page-content) opaque over the background image */
+/* Removed background-color from .hero, as it should be transparent on homepage */
 body.homepage-background header,
-body.homepage-background footer,
-body.homepage-background .introduction,
 body.homepage-background .page-content .content-section,
 body.homepage-background .page-navigation,
-body.homepage-background .mobile-nav { /* Apply to mobile nav too */
-    /* Use a slightly opaque background to make content readable over the image */
+body.homepage-background .mobile-nav {
     background-color: rgba(255, 255, 255, 0.9); /* Light background, 90% opaque */
     border: 1px solid rgba(0, 0, 0, 0.05); /* Soft border */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow */
     margin-bottom: 20px; /* Add some space between sections for visual separation */
 }
 
+/* Introduction section on homepage is transparent */
+body.homepage-background .introduction {
+    background-color: transparent; /* Remove background for seamless flow */
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
+    padding: 40px 20px 0 20px; /* Adjust padding to sit closer to hero */
+    margin-bottom: 20px; /* Maintain space below */
+}
+
+/* Footer background transparent on homepage */
+body.homepage-background footer {
+    background-color: transparent;
+    border-top: none; /* Remove top border if it clashes */
+    box-shadow: none;
+    color: var(--color-white); /* Ensure text is readable over the dark background */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Add shadow for readability */
+}
+
+
 /* Dark mode version for the homepage background elements */
 body.homepage-background.dark-mode header,
-body.homepage-background.dark-mode .hero, /* Ensure hero is also dark mode compatible if it has a background */
-body.homepage-background.dark-mode footer,
-body.homepage-background.dark-mode .introduction,
 body.homepage-background.dark-mode .page-content .content-section,
 body.homepage-background.dark-mode .page-navigation,
-body.homepage-background.dark-mode .mobile-nav { /* Apply to mobile nav too */
+body.homepage-background.dark-mode .mobile-nav {
     background-color: rgba(44, 44, 44, 0.9); /* Dark background, 90% opaque */
     border-color: rgba(255, 255, 255, 0.1); /* Lighter border for dark mode */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
+
+/* Introduction section on homepage in dark mode is transparent */
+body.homepage-background.dark-mode .introduction {
+    background-color: transparent; /* Remove background for seamless flow */
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
+    padding: 40px 20px 0 20px; /* Adjust padding to sit closer to hero */
+    margin-bottom: 20px; /* Maintain space below */
+}
+
+/* Footer background transparent on homepage in dark mode */
+body.homepage-background.dark-mode footer {
+    background-color: transparent;
+    border-top: none;
+    box-shadow: none;
+    color: var(--color-white); /* Ensure text is white in dark mode */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
 
 body.dark-mode .desktop-nav ul li a,
 body.dark-mode .mobile-nav ul li a,
@@ -135,7 +178,7 @@ body.dark-mode .menu-toggle span {
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
-    color: var(--color-text-light);
+    color: var(--color-text-light); /* Default for most headings */
     margin-top: 1em;
     margin-bottom: 0.5em;
     transition: color var(--transition-speed);
@@ -147,7 +190,7 @@ body.dark-mode h3,
 body.dark-mode h4,
 body.dark-mode h5,
 body.dark-mode h6 {
-    color: var(--color-text-dark);
+    color: var(--color-text-dark); /* Dark mode for most headings */
 }
 
 h1 { font-size: 2.5em; }
@@ -251,7 +294,7 @@ header .container {
     background-color: var(--color-background-light); /* Matches header background */
     border-top: 1px solid var(--color-border-light);
     padding-bottom: 10px;
-    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .mobile-nav.open {
@@ -374,55 +417,67 @@ body.dark-mode .theme-toggle:hover {
 
 /* --- Hero Section (Content only, background is now on body) --- */
 .hero {
-    position: relative; /* Needed for z-index of content */
+    position: relative;
     width: 100%;
-    height: 60vh; /* Adjust height as needed */
+    min-height: 50vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: var(--color-white); /* Text is white against the full-page background */
-    padding: 20px;
+    padding: 60px 20px;
     box-sizing: border-box;
-}
-
-/* --- Specific styling for Hero content when homepage-background is active --- */
-body.homepage-background .hero {
-    /* Make the hero transparent so the body background shows through */
-    background-color: transparent;
-    box-shadow: none;
+    background-color: transparent; /* Ensure hero section background is transparent */
+    box-shadow: none; /* Remove any shadow on the hero section */
     border: none;
 }
 
 .hero .container {
-    position: relative; /* Ensure content is above any potential future overlays */
+    position: relative;
     z-index: 2;
     max-width: 900px;
+    padding: 0; /* Ensure no extra padding inside container on hero */
+}
+
+/* Consolidated styling for hero text on homepage */
+/* All hero text on homepage will be white with text-shadow, regardless of dark mode toggle */
+body.homepage-background .hero h1,
+body.homepage-background .hero .subtitle,
+body.homepage-background .hero .author-uni,
+body.homepage-background .hero .synopsis-logline {
+    color: var(--color-white); /* Always white on homepage hero */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9); /* Strong text-shadow for readability */
+    -webkit-text-stroke: initial; /* Ensure no text stroke is applied */
 }
 
 .hero h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 3.5em;
-    margin-bottom: 10px;
+    font-size: 3em;
     line-height: 1.2;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Adds shadow for better readability */
+    margin-bottom: 15px;
 }
 
 .hero .subtitle {
     font-family: 'Open Sans', sans-serif;
-    font-size: 1.5em;
+    font-size: 1.3em;
     font-weight: 600;
     margin-bottom: 15px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .hero .author-uni,
 .hero .synopsis-logline {
     font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
+    font-size: 0.95em;
     margin-bottom: 10px;
     line-height: 1.5;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.hero .navigation-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 
@@ -432,15 +487,34 @@ main {
 }
 
 .introduction {
-    background-color: var(--color-primary); /* Default for all introduction sections */
+    background-color: var(--color-primary); /* Default for other pages */
     color: var(--color-white);
     padding: 40px 0;
     text-align: center;
+    margin-top: 0;
 }
 
 .introduction h2 {
-    color: var(--color-white);
+    color: var(--color-white); /* Default for other pages */
     margin-bottom: 20px;
+}
+
+body.dark-mode .introduction h2 { /* Ensure h2 in introduction in dark mode (on other pages) stays white */
+    color: var(--color-white);
+}
+
+/* **NEW CHANGE:** On homepage, introduction text color will ALWAYS be white with text-shadow */
+body.homepage-background .introduction h2,
+body.homepage-background .introduction p {
+    color: var(--color-white); /* Always white text for intro on homepage */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Add shadow for readability */
+}
+
+/* Remove previous specific dark mode rule for homepage introduction text */
+body.homepage-background.dark-mode .introduction h2,
+body.homepage-background.dark-mode .introduction p {
+    /* These rules are now redundant as the one above applies universally on homepage */
+    /* If you want different shadow/color in dark mode, you can re-add with !important or adjust specificity */
 }
 
 .introduction p {
@@ -466,13 +540,13 @@ main {
 }
 
 .page-content .content-section {
-    background-color: var(--color-card-background-light); /* Default for all content sections */
+    background-color: var(--color-card-background-light);
     border: 1px solid var(--color-border-light);
     border-radius: 8px;
     padding: 30px;
     margin-bottom: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    transition: background-color var(--transition-speed), border-color var(--transition-speed), box-shadow var(--transition-speed);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .content-section h2 {
@@ -480,7 +554,7 @@ main {
     border-bottom: 2px solid var(--color-border-light);
     padding-bottom: 10px;
     margin-bottom: 20px;
-    transition: border-color var(--transition-speed);
+    transition: border-color 0.3s ease;
 }
 
 body.dark-mode .content-section h2 {
@@ -495,15 +569,15 @@ body.dark-mode .content-section h2 {
 .image-placeholder {
     text-align: center;
     margin: 30px 0;
-    background-color: var(--color-background-light); /* Light background for images */
+    background-color: var(--color-background-light);
     border: 1px solid var(--color-border-light);
     border-radius: 8px;
     padding: 15px;
-    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 body.dark-mode .image-placeholder {
-    background-color: var(--color-card-background-dark); /* Darker background for images */
+    background-color: var(--color-card-background-dark);
     border-color: var(--color-border-dark);
 }
 
@@ -511,14 +585,14 @@ body.dark-mode .image-placeholder {
     max-width: 100%;
     height: auto;
     border-radius: 5px;
-    display: block; /* Remove extra space below image */
-    margin: 0 auto 10px auto; /* Center image and add space below */
+    display: block;
+    margin: 0 auto 10px auto;
 }
 
 .image-placeholder .caption {
     font-size: 0.9em;
     color: #666;
-    transition: color var(--transition-speed);
+    transition: color 0.3s ease;
 }
 
 body.dark-mode .image-placeholder .caption {
@@ -537,13 +611,13 @@ body.dark-mode .image-placeholder .caption {
 .page-navigation {
     text-align: center;
     padding: 40px 0;
-    background-color: var(--color-background-light); /* Default for all page navigation sections */
+    background-color: var(--color-background-light);
     border-top: 1px solid var(--color-border-light);
     display: flex;
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
-    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Buttons */
@@ -578,16 +652,15 @@ body.dark-mode .image-placeholder .caption {
 /* --- Responsive Video Embeds --- */
 .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio (height / width = 9 / 16 = 0.5625) */
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
     height: 0;
     overflow: hidden;
-    /* ADDED FOR CENTERING ON DESKTOP */
-    max-width: 800px; /* Limits max width for centering on large screens */
-    width: 100%; /* Ensures it scales down on smaller screens */
-    background: #000; /* Fallback background for video container */
-    margin: 30px auto; /* Center the video container and add vertical space */
-    border-radius: 8px; /* Match content section border-radius */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    max-width: 800px;
+    width: 100%;
+    background: #000;
+    margin: 30px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .video-container iframe,
@@ -598,7 +671,7 @@ body.dark-mode .image-placeholder .caption {
     left: 0;
     width: 100%;
     height: 100%;
-    border: 0; /* Remove default iframe border */
+    border: 0;
 }
 
 /* Dark mode adjustments for video container */
@@ -608,30 +681,30 @@ body.dark-mode .video-container {
 
 /* --- About Page: Member Profiles --- */
 .member-profile {
-    display: flex; /* Use flexbox for horizontal layout */
-    align-items: center; /* Vertically align items in the center */
-    gap: 30px; /* Space between text and image */
-    margin-bottom: 40px; /* Space between different member profiles */
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 40px;
     padding: 20px;
-    background-color: var(--color-card-background-light); /* Match content section background */
+    background-color: var(--color-card-background-light);
     border: 1px solid var(--color-border-light);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: background-color var(--transition-speed), border-color var(--transition-speed), box-shadow var(--transition-speed);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Alternate layout for every second member (optional, but adds visual interest) */
+/* Alternate layout for every second member */
 .member-profile:nth-child(even) {
-    flex-direction: row-reverse; /* Swap order of image and text for even profiles */
+    flex-direction: row-reverse;
 }
 
 .member-text {
-    flex: 2; /* Allows text to take up more space (e.g., 2/3) */
+    flex: 2;
     text-align: left;
 }
 
 .member-text h3 {
-    margin-top: 0; /* Remove top margin for names */
+    margin-top: 0;
     color: var(--color-primary);
     font-size: 1.8em;
 }
@@ -649,19 +722,19 @@ body.dark-mode .video-container {
 }
 
 .member-image {
-    flex: 1; /* Allows image to take up less space (e.g., 1/3) */
-    text-align: center; /* Center the image if it's smaller than its container */
+    flex: 1;
+    text-align: center;
 }
 
 .member-image img {
     max-width: 100%;
     height: auto;
-    border-radius: 50%; /* Make images circular */
-    object-fit: cover; /* Ensures image covers the area without distortion */
-    aspect-ratio: 1 / 1; /* Keep images perfectly square before border-radius makes them round */
-    border: 3px solid var(--color-primary); /* Add a border to the image */
+    border-radius: 50%;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    border: 3px solid var(--color-primary);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Dark Mode Adjustments for Member Profiles */
@@ -672,13 +745,13 @@ body.dark-mode .member-profile {
 }
 
 body.dark-mode .member-image img {
-    border-color: var(--color-secondary); /* A different border color in dark mode */
+    border-color: var(--color-secondary);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* Footer */
 footer {
-    background-color: var(--color-background-light); /* Default for all footers */
+    background-color: var(--color-background-light);
     color: var(--color-text-light);
     text-align: center;
     padding: 20px 0;
@@ -698,13 +771,13 @@ footer p {
 /* Responsive Adjustments */
 @media (max-width: 992px) {
     .desktop-nav {
-        display: none; /* Hide desktop nav on smaller screens */
+        display: none;
     }
     .menu-toggle {
-        display: flex; /* Show hamburger icon */
+        display: flex;
     }
     header .container {
-        justify-content: space-between; /* Space out logo and toggle */
+        justify-content: space-between;
     }
     .site-title {
         font-size: 1.5em;
@@ -716,13 +789,14 @@ footer p {
 
 @media (max-width: 768px) {
     .hero {
-        height: 50vh;
+        min-height: auto;
+        padding: 40px 15px;
     }
     .hero h1 {
-        font-size: 2.5em;
+        font-size: 2.2em;
     }
     .hero .subtitle {
-        font-size: 1.2em;
+        font-size: 1.1em;
     }
     h1 { font-size: 2em; }
     h2 { font-size: 1.7em; }
@@ -740,44 +814,44 @@ footer p {
 
     /* Responsive adjustments for member profiles */
     .member-profile,
-    .member-profile:nth-child(even) { /* Reset flex-direction for all on mobile */
-        flex-direction: column; /* Stack text and image vertically */
-        text-align: center; /* Center text on mobile */
-        gap: 20px; /* Adjust gap for vertical stacking */
+    .member-profile:nth-child(even) {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
     }
 
     .member-text,
     .member-image {
-        flex: none; /* Remove flex sizing */
-        width: 100%; /* Take full width */
+        flex: none;
+        width: 100%;
     }
 
     .member-image img {
-        max-width: 150px; /* Smaller image on mobile */
-        height: 150px; /* Maintain aspect ratio */
+        max-width: 150px;
+        height: 150px;
     }
 
     .member-text h3 {
-        font-size: 1.6em; /* Adjust font size for mobile */
+        font-size: 1.6em;
     }
     .member-role, .member-description {
-        text-align: center; /* Ensure text is centered below image on mobile */
+        text-align: center;
     }
 }
 
 @media (max-width: 480px) {
     .hero {
-        height: 40vh;
+        padding: 30px 10px;
     }
     .hero h1 {
-        font-size: 1.8em;
+        font-size: 1.6em;
     }
     .hero .subtitle {
-        font-size: 1em;
+        font-size: 0.9em;
     }
     .hero .author-uni,
     .hero .synopsis-logline {
-        font-size: 0.9em;
+        font-size: 0.85em;
     }
     h1 { font-size: 1.8em; }
     h2 { font-size: 1.5em; }
@@ -789,7 +863,7 @@ footer p {
         padding: 20px;
     }
     .button {
-        width: 100%; /* Full width buttons on very small screens */
+        width: 100%;
         margin-bottom: 10px;
     }
     .navigation-buttons,
@@ -802,8 +876,8 @@ footer p {
         width: 40px;
         height: 40px;
         font-size: 1.2em;
-        bottom: 15px; /* Slightly less from bottom for smaller screens */
-        right: 15px; /* Slightly less from right for smaller screens */
+        bottom: 15px;
+        right: 15px;
     }
     .university-logo {
         height: 35px;
